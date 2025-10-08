@@ -1,6 +1,7 @@
 import { useGameDirector } from '@/mobile/contexts/GameDirector';
 import { useGameStore } from '@/stores/gameStore';
 import { getEventIcon, getEventTitle } from '@/utils/events';
+import { EXPLORE_PROBABILITY_COUNTS, getExploreEncounterProbabilities } from '@/utils/explore';
 import { Box, Button, Typography, keyframes } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 import AdventurerInfo from '../components/AdventurerInfo';
@@ -15,6 +16,7 @@ export default function ExploreScreen() {
   const [untilBeast, setUntilBeast] = useState(false);
   const [isExploring, setIsExploring] = useState(false);
   const listRef = useRef<HTMLDivElement>(null);
+  const encounterProbabilities = getExploreEncounterProbabilities();
 
   // Function to scroll to top
   const scrollToTop = () => {
@@ -47,6 +49,31 @@ export default function ExploreScreen() {
         <Box sx={styles.section}>
           <Box sx={styles.sectionHeader}>
             <Typography sx={styles.sectionTitle}>Explorer Log</Typography>
+          </Box>
+
+          <Box sx={styles.probabilityCard}>
+            <Typography sx={styles.probabilityTitle}>Encounter Chances</Typography>
+            <Box sx={styles.probabilityRow}>
+              <Typography sx={styles.probabilityLabel}>Beast</Typography>
+              <Typography sx={styles.probabilityValue}>
+                {encounterProbabilities.beast.toFixed(1)}%
+              </Typography>
+            </Box>
+            <Box sx={styles.probabilityRow}>
+              <Typography sx={styles.probabilityLabel}>Obstacle</Typography>
+              <Typography sx={styles.probabilityValue}>
+                {encounterProbabilities.obstacle.toFixed(1)}%
+              </Typography>
+            </Box>
+            <Box sx={styles.probabilityRow}>
+              <Typography sx={styles.probabilityLabel}>Discovery</Typography>
+              <Typography sx={styles.probabilityValue}>
+                {encounterProbabilities.discovery.toFixed(1)}%
+              </Typography>
+            </Box>
+            <Typography sx={styles.probabilityFootnote}>
+              Based on {EXPLORE_PROBABILITY_COUNTS.total} entropy outcomes (seed % 3).
+            </Typography>
           </Box>
 
           <Box sx={styles.encountersList} ref={listRef}>
@@ -268,6 +295,42 @@ const styles = {
     background: 'rgba(128, 255, 0, 0.05)',
     borderRadius: '6px',
     border: '1px solid rgba(128, 255, 0, 0.1)',
+  },
+  probabilityCard: {
+    padding: '12px',
+    borderRadius: '16px',
+    border: '1px solid rgba(128, 255, 0, 0.2)',
+    background: 'rgba(8, 62, 34, 0.35)',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '8px',
+    mb: 2,
+  },
+  probabilityTitle: {
+    color: '#d0c98d',
+    fontFamily: 'Cinzel, Georgia, serif',
+    fontWeight: 600,
+    fontSize: '1rem',
+    letterSpacing: '0.75px',
+    textTransform: 'uppercase',
+  },
+  probabilityRow: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  probabilityLabel: {
+    fontSize: '0.95rem',
+    color: '#d0c98d',
+  },
+  probabilityValue: {
+    fontSize: '0.95rem',
+    fontWeight: 600,
+    color: '#80ff00',
+  },
+  probabilityFootnote: {
+    fontSize: '0.75rem',
+    color: 'rgba(208, 201, 141, 0.7)',
   },
   sectionHeader: {
     display: 'flex',

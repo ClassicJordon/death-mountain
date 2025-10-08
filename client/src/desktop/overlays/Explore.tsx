@@ -2,6 +2,7 @@ import { useGameDirector } from '@/desktop/contexts/GameDirector';
 import { useGameStore } from '@/stores/gameStore';
 import { useMarketStore } from '@/stores/marketStore';
 import { streamIds } from '@/utils/cloudflare';
+import { EXPLORE_PROBABILITY_COUNTS, getExploreEncounterProbabilities } from '@/utils/explore';
 import { getEventTitle } from '@/utils/events';
 import { ItemUtils } from '@/utils/loot';
 import { Box, Button, Typography } from '@mui/material';
@@ -68,6 +69,7 @@ export default function ExploreOverlay() {
   };
 
   const event = exploreLog[0];
+  const encounterProbabilities = getExploreEncounterProbabilities();
 
   return (
     <Box sx={[styles.container, spectating && styles.spectating]}>
@@ -156,6 +158,30 @@ export default function ExploreOverlay() {
               )}
             </Box>
           </Box>}
+        </Box>
+        <Box sx={styles.probabilitiesContainer}>
+          <Typography sx={styles.probabilitiesTitle}>Encounter Chances</Typography>
+          <Box sx={styles.probabilityRow}>
+            <Typography sx={styles.probabilityLabel}>Beast</Typography>
+            <Typography sx={styles.probabilityValue}>
+              {encounterProbabilities.beast.toFixed(1)}%
+            </Typography>
+          </Box>
+          <Box sx={styles.probabilityRow}>
+            <Typography sx={styles.probabilityLabel}>Obstacle</Typography>
+            <Typography sx={styles.probabilityValue}>
+              {encounterProbabilities.obstacle.toFixed(1)}%
+            </Typography>
+          </Box>
+          <Box sx={styles.probabilityRow}>
+            <Typography sx={styles.probabilityLabel}>Discovery</Typography>
+            <Typography sx={styles.probabilityValue}>
+              {encounterProbabilities.discovery.toFixed(1)}%
+            </Typography>
+          </Box>
+          <Typography sx={styles.probabilitiesFootnote}>
+            Based on {EXPLORE_PROBABILITY_COUNTS.total} entropy outcomes (seed % 3).
+          </Typography>
         </Box>
       </Box>
 
@@ -308,6 +334,42 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  probabilitiesContainer: {
+    marginTop: '12px',
+    padding: '10px 12px',
+    borderRadius: '10px',
+    border: '1px solid rgba(128, 255, 0, 0.15)',
+    background: 'rgba(8, 62, 34, 0.35)',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '6px',
+  },
+  probabilitiesTitle: {
+    fontFamily: 'Cinzel, Georgia, serif',
+    fontWeight: 600,
+    fontSize: '0.9rem',
+    color: '#d0c98d',
+    letterSpacing: '0.5px',
+    textTransform: 'uppercase',
+  },
+  probabilityRow: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  probabilityLabel: {
+    fontSize: '0.85rem',
+    color: '#d0c98d',
+  },
+  probabilityValue: {
+    fontSize: '0.85rem',
+    fontWeight: 600,
+    color: '#80ff00',
+  },
+  probabilitiesFootnote: {
+    fontSize: '0.7rem',
+    color: 'rgba(208, 201, 141, 0.7)',
   },
   eventLogText: {
     color: '#d0c98d',
